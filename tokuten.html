@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ワンマンライブ 特典計算</title>
+    <style>
+        /* ここからCSS（デザイン）※デザインは変更ありません */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans CJK JP", "Original Yu Gothic", "Yu Gothic", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: #f4f8ff;
+            color: #333;
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        h1 {
+            color: #005a9c;
+            text-align: center;
+            border-bottom: 2px solid #005a9c;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #333;
+            border-left: 5px solid #007bff;
+            padding-left: 10px;
+            margin-top: 30px;
+        }
+        .input-area {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .input-group {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .input-group label {
+            font-weight: bold;
+            width: 80px;
+            margin-right: 10px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #fff;
+            border: 2px dashed #007bff;
+            border-radius: 8px;
+            display: none;
+        }
+        #result h2 {
+            margin-top: 0;
+            text-align: center;
+            border-left: none;
+            padding-left: 0;
+        }
+        #result ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        #result li {
+            font-size: 1.1em;
+            font-weight: bold;
+            padding: 12px;
+            background-color: #e6f2ff;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        #result p {
+            text-align: center;
+            font-weight: bold;
+        }
+        #nextBenefitMessage {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff8e1;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #856404;
+            text-align: center;
+        }
+        #totalAmountDisplay {
+            font-size: 1.2em;
+            color: #005a9c;
+        }
+        .info-section {
+            margin-top: 30px;
+        }
+        .info-section p {
+            font-size: 1.1em;
+            text-align: center;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .info-table th, .info-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .info-table th {
+            background-color: #e6f2ff;
+            color: #005a9c;
+            text-align: center;
+        }
+        .info-table td:first-child {
+            font-weight: bold;
+            width: 30%;
+        }
+        /* ここまでCSS */
+    </style>
+</head>
+<body>
+
+    <h1>ワンマンライブ 特典計算</h1>
+
+    <div class="input-area">
+        <h2>貢献度を入力</h2>
+        <p style="text-align: center; margin-top: 0; margin-bottom: 20px;">
+            チェキ：500円/枚、 動員：2,500円/人 として計算します。
+        </p>
+        <div class="input-group">
+            <label for="cheki">チェキ：</label>
+            <input type="number" id="cheki" placeholder="例: 10">
+        </div>
+        <div class="input-group">
+            <label for="douin">動員：</label>
+            <input type="number" id="douin" placeholder="例: 2">
+        </div>
+        <button onclick="calculateBenefits()">特典を計算する！</button>
+    </div>
+
+    <div id="result">
+        <h2>あなたが獲得した特典</h2>
+        <p id="totalAmountDisplay"></p> <ul id="benefitList">
+            </ul>
+        <p id="noBenefitMessage" style="display: none;">獲得できる特典はありません。</p>
+        <p id="nextBenefitMessage"></p> </div>
+
+    <div class="info-section">
+        <h2>特典一覧 (ルール)</h2>
+        <table class="info-table">
+            <thead>
+                <tr>
+                    <th>合計金額</th>
+                    <th>特典内容</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2,500円以上</td>
+                    <td>チェキor持ち物サイン</td>
+                </tr>
+                <tr>
+                    <td>5,000円以上</td>
+                    <td>ライブ映像</td>
+                </tr>
+                <tr>
+                    <td>7,500円以上</td>
+                    <td>TikTok撮影</td>
+                </tr>
+                <tr>
+                    <td>10,000円以上</td>
+                    <td>選べる特典から一つ</td>
+                </tr>
+                <tr>
+                    <td>15,000円以上</td>
+                    <td>選べる特典から二つ</td>
+                </tr>
+                <tr>
+                    <td>20,000円以上</td>
+                    <td>選べる特典から三つ</td>
+                </tr>
+                <tr>
+                    <td>30,000円以上</td>
+                    <td>お昼ご飯デート</td>
+                </tr>
+                <tr>
+                    <td>40,000円以上</td>
+                    <td>１日デート</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h2>選べる特典 内容</h2>
+        <table class="info-table">
+            <thead>
+                <tr>
+                    <th>選べる特典</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>私物プレゼント</td>
+                </tr>
+                <tr>
+                    <td>カラオケオフ会</td>
+                </tr>
+                <tr>
+                    <td>プリ同行</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // ここからJavaScript（計算ロジック）
+        
+        // (★ここが更新されました★)
+        // 次の特典までの差額を計算する関数
+        function getNextBenefitInfo(currentAmount) {
+            // 新しい特典ルール
+            const thresholds = [
+                { amount: 2500, name: "サイン" },
+                { amount: 5000, name: "ライブ映像" },
+                { amount: 7500, name: "TikTok撮影" },
+                { amount: 10000, name: "選べる特典(一つ)" },
+                { amount: 15000, name: "選べる特典(二つ)" },
+                { amount: 20000, name: "選べる特典(三つ)" },
+                { amount: 30000, name: "お昼ご飯デート" },
+                { amount: 40000, name: "１日デート" }
+            ];
+
+            // 40,000円以上の場合
+            if (currentAmount >= thresholds[thresholds.length - 1].amount) {
+                return "🎉 すべての特典を獲得しました！おめでとうございます！";
+            }
+
+            // 次の特典を探す
+            for (let i = 0; i < thresholds.length; i++) {
+                if (currentAmount < thresholds[i].amount) {
+                    const difference = thresholds[i].amount - currentAmount;
+                    const nextBenefitName = thresholds[i].name;
+                    return `あと ${difference.toLocaleString()} 円相当で、次の特典「${nextBenefitName}」が追加されます！`;
+                }
+            }
+            return ""; // 念のため
+        }
+        
+        // (★ここが更新されました★)
+        // メインの計算関数
+        function calculateBenefits() {
+            // 1. 入力された値を取得
+            const chekiCount = parseInt(document.getElementById('cheki').value) || 0;
+            const douinCount = parseInt(document.getElementById('douin').value) || 0;
+
+            // 2. 合計金額を計算 (チェキ: 500円, 動員: 2500円)
+            const totalAmount = (chekiCount * 500) + (douinCount * 2500);
+
+            // 3. 特典を判定
+            let benefits = [];
+            
+            // --- 新しい特典ロジック ---
+            // グループA (積み上げ): サイン
+            if (totalAmount >= 2500) {
+                benefits.push("サイン");
+            }
+            // グループB (積み上げ): ライブ映像
+            if (totalAmount >= 5000) {
+                benefits.push("ライブ映像");
+            }
+            // グループC (積み上げ): TikTok
+            if (totalAmount >= 7500) {
+                benefits.push("TikTok撮影");
+            }
+
+            // グループD (上書き): 選べる特典
+            let groupD = "";
+            if (totalAmount >= 20000) {
+                groupD = "選べる特典から三つ";
+            } else if (totalAmount >= 15000) {
+                groupD = "選べる特典から二つ";
+            } else if (totalAmount >= 10000) {
+                groupD = "選べる特典から一つ";
+            }
+            if (groupD) benefits.push(groupD); // 判定結果があればリストに追加
+
+            // グループE (上書き): デート
+            let groupE = "";
+            if (totalAmount >= 40000) {
+                groupE = "１日デート";
+            } else if (totalAmount >= 30000) {
+                groupE = "お昼ご飯デート";
+            }
+            if (groupE) benefits.push(groupE); // 判定結果があればリストに追加
+            
+            // --- 特典ロジックここまで ---
+
+            // 4. 結果をHTMLに表示
+            const resultDiv = document.getElementById('result');
+            const listElement = document.getElementById('benefitList');
+            const noBenefitMsg = document.getElementById('noBenefitMessage');
+            const totalAmountDisplay = document.getElementById('totalAmountDisplay');
+            const nextBenefitMsg = document.getElementById('nextBenefitMessage');
+            
+            listElement.innerHTML = ""; // 以前の結果をクリア
+            
+            totalAmountDisplay.textContent = `合計貢献度： ${totalAmount.toLocaleString()} 円相当`;
+
+            if (benefits.length > 0) {
+                benefits.forEach(benefit => {
+                    const li = document.createElement('li');
+                    li.textContent = benefit;
+                    listElement.appendChild(li);
+                });
+                noBenefitMsg.style.display = 'none';
+            } else {
+                noBenefitMsg.style.display = 'block';
+            }
+            
+            // 5. 「次の特典」情報を計算して表示
+            nextBenefitMsg.textContent = getNextBenefitInfo(totalAmount);
+            
+            resultDiv.style.display = 'block'; // 結果エリア全体を表示
+        }
+        // ここまでJavaScript
+    </script>
+
+</body>
+</html>
