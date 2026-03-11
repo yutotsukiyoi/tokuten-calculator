@@ -172,7 +172,7 @@
             </thead>
             <tbody>
                 <tr><td>2,500円以上</td><td>チェキor持ち物サイン</td></tr>
-                <tr><td>5,000円以上</td><td>ライブ映像</td></tr>
+                <tr><td>5,000円以上</td><td>スマホ写真撮影</td></tr>
                 <tr><td>7,500円以上</td><td>TikTok撮影</td></tr>
                 <tr><td>10,000円以上</td><td>選べる特典から一つ</td></tr>
                 <tr><td>15,000円以上</td><td>選べる特典から二つ</td></tr>
@@ -196,7 +196,7 @@
         function getNextBenefitInfo(currentAmount) {
             const thresholds = [
                 { amount: 2500, name: "チェキor持ち物サイン" },
-                { amount: 5000, name: "ライブ映像" },
+                { amount: 5000, name: "スマホ写真撮影" },
                 { amount: 7500, name: "TikTok撮影" },
                 { amount: 10000, name: "選べる特典(一つ)" },
                 { amount: 15000, name: "選べる特典(二つ)" },
@@ -230,7 +230,7 @@
             
             // 特典判定ロジック
             if (totalAmount >= 2500) benefits.push("チェキor持ち物サイン");
-            if (totalAmount >= 5000) benefits.push("ライブ映像");
+            if (totalAmount >= 5000) benefits.push("スマホ写真撮影");
             if (totalAmount >= 7500) benefits.push("TikTok撮影");
 
             if (totalAmount >= 20000) {
